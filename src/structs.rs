@@ -22,47 +22,32 @@
  * SOFTWARE.
  */
 
-#[macro_use]
-extern crate lazy_static;
-extern crate rustc_serialize;
-
-mod structs;
-
-pub use structs::{ECEF, LLA};
-
-// Semi-major axis of the Earth in meters
-const WGS84_A: f64 = 6378137.0;
-// Inverse flattening of the Earth
-const WGS84_IF: f64 = 298.257223563;
-// Flattening of the Earth
-const WGS84_F: f64 = 1./WGS84_IF;
-// Semi-minor axis of the Earth in meters
-// const WGS84_B: f64 = WGS84_A*(1.-WGS84_F);
-// Eccentricity of the Earth
-lazy_static! {
-    static ref WGS84_E: f64 = (2.*WGS84_F - WGS84_F*WGS84_F).sqrt();
+#[derive(Debug, Copy, Clone, RustcEncodable, RustcDecodable)]
+pub struct LLA {
+    pub lat_deg: f64,
+    pub lon_deg: f64,
+    pub alt_m:   f64,
 }
 
-pub fn lla_to_ecef(lla: &LLA) -> ECEF {
-    let d = *WGS84_E * lla.lat_deg.sin();
-    let n = WGS84_A / (1. - d*d).sqrt();
-    let tmp = (n + lla.alt_m) * lla.lat_deg.cos();
-    ECEF {
-        x: tmp * lla.lon_deg.cos(),
-        y: tmp * lla.lon_deg.sin(),
-        z: ((1. - *WGS84_E**WGS84_E)*n + lla.alt_m) * lla.lat_deg.sin(),
+impl PartialEq for LLA {
+    fn eq(&self, other: &LLA) -> bool {
+        (self.alt_m   - other.alt_m).abs()   < 0.000_000_1 &&
+        (self.lat_deg - other.lat_deg).abs() < 0.000_000_1 &&
+        (self.lon_deg - other.lon_deg).abs() < 0.000_000_1
     }
 }
 
-#[test]
-fn lla_to_ecef_conv() {
-    let lla = LLA {
-        lat_deg : 0.,
-        lon_deg : 0.,
-        alt_m   : 0.,
-    };
-    let ecef = lla_to_ecef(&lla);
-    println!("lla:  {:?}", lla);
-    println!("ecef: {:?}", ecef);
-    unimplemented!();
+#[derive(Debug, Copy, Clone, RustcEncodable, RustcDecodable)]
+pub struct ECEF {
+    pub x: f64,
+    pub y: f64,
+    pub z: f64,
+}
+
+impl PartialEq for ECEF {
+    fn eq(&self, other: &ECEF) -> bool {
+        (self.x - other.x).abs() < 0.000_000_1 &&
+        (self.y - other.y).abs() < 0.000_000_1 &&
+        (self.z - other.z).abs() < 0.000_000_1
+    }
 }

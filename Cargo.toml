@@ -3,3 +3,7 @@ name = "coordinate-conversion"
 version = "0.1.0"
 authors = ["Mattis Marjak <mattis.marjak@gmail.com>"]
 license = "MIT"
+
+[dependencies]
+rustc-serialize = "*"
+lazy_static = "*"
