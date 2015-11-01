@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-use std::f64::consts::PI;
 use ::structs::{ECEF, LLA};
 
 // Conversion formulas from https://microem.ru/files/2012/08/GPS.G1-X-00006.pdf
@@ -46,13 +45,13 @@ lazy_static! {
 
 
 pub fn lla_to_ecef(lla: &LLA) -> ECEF {
-    let d = *WGS84_E * to_rad(lla.lat_deg).sin();
+    let d = *WGS84_E * lla.lat_deg.to_radians().sin();
     let n = WGS84_A / (1. - d*d).sqrt();
-    let tmp = (n + lla.alt_m) * to_rad(lla.lat_deg).cos();
+    let tmp = (n + lla.alt_m) * lla.lat_deg.to_radians().cos();
     ECEF {
-        x: tmp * to_rad(lla.lon_deg).cos(),
-        y: tmp * to_rad(lla.lon_deg).sin(),
-        z: ((1. - *WGS84_E*(*WGS84_E))*n + lla.alt_m) * to_rad(lla.lat_deg).sin(),
+        x: tmp * lla.lon_deg.to_radians().cos(),
+        y: tmp * lla.lon_deg.to_radians().sin(),
+        z: ((1. - *WGS84_E*(*WGS84_E))*n + lla.alt_m) * lla.lat_deg.to_radians().sin(),
     }
 }
 
@@ -70,16 +69,8 @@ pub fn ecef_to_lla(ecef: &ECEF) -> LLA {
     let n = WGS84_A / (1. - d*d).sqrt();
 
     LLA {
-        lat_deg: to_deg(lat_rad),
-        lon_deg: to_deg((ecef.y/ecef.x).atan()),
+        lat_deg: lat_rad.to_degrees(),
+        lon_deg: (ecef.y/ecef.x).atan().to_degrees(),
         alt_m:   (p/lat_rad.cos())-n,
     }
-}
-
-fn to_rad(deg: f64) -> f64 {
-    (deg/180.)*PI
-}
-
-fn to_deg(rad: f64) -> f64 {
-    (rad/PI)*180.
 }
