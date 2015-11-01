@@ -22,6 +22,10 @@
  * SOFTWARE.
  */
 
+use std::convert::From;
+use ::conversions::{ecef_to_lla, lla_to_ecef};
+
+
 #[derive(Debug, Copy, Clone, RustcEncodable, RustcDecodable)]
 pub struct LLA {
     pub lat_deg: f64,
@@ -37,6 +41,25 @@ impl PartialEq for LLA {
     }
 }
 
+impl From<ECEF> for LLA {
+    fn from(ecef: ECEF) -> LLA {
+        ecef_to_lla(&ecef)
+    }
+}
+
+impl<'a> From<&'a ECEF> for LLA {
+    fn from(ecef: &ECEF) -> LLA {
+        ecef_to_lla(ecef)
+    }
+}
+
+impl<'a> From<&'a LLA> for LLA {
+    fn from(lla: &LLA) -> LLA {
+        (*lla).clone()
+    }
+}
+
+
 #[derive(Debug, Copy, Clone, RustcEncodable, RustcDecodable)]
 pub struct ECEF {
     pub x: f64,
@@ -49,5 +72,23 @@ impl PartialEq for ECEF {
         (self.x - other.x).abs() < 0.000_000_1 &&
         (self.y - other.y).abs() < 0.000_000_1 &&
         (self.z - other.z).abs() < 0.000_000_1
+    }
+}
+
+impl From<LLA> for ECEF {
+    fn from(lla: LLA) -> ECEF {
+        lla_to_ecef(&lla)
+    }
+}
+
+impl<'a> From<&'a LLA> for ECEF {
+    fn from(lla: &LLA) -> ECEF {
+        lla_to_ecef(lla)
+    }
+}
+
+impl<'a> From<&'a ECEF> for ECEF {
+    fn from(ecef: &ECEF) -> ECEF {
+        (*ecef).clone()
     }
 }
