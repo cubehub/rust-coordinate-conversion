@@ -26,8 +26,12 @@
         trivial_casts, trivial_numeric_casts, unstable_features,
         unused_import_braces, unused_qualifications)]
 
+#![cfg_attr(feature = "rustc-serialize", warn(soft_unstable, deprecated))]
+        
 #[macro_use]
 extern crate lazy_static;
+
+#[cfg(feature = "rustc-serialize")]
 extern crate rustc_serialize;
 
 mod structs;

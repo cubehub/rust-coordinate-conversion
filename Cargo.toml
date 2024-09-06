@@ -1,9 +1,9 @@
 [package]
 name = "coordinates"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Mattis Marjak <mattis.marjak@gmail.com>"]
 license = "MIT"
 
 [dependencies]
-rustc-serialize = "*"
 lazy_static = "*"
+rustc-serialize = { version = "*", optional = true}
