@@ -25,8 +25,11 @@
 use std::convert::From;
 use ::conversions::{ecef_to_lla, lla_to_ecef};
 
+#[cfg(feature="serde")]
+use serde::{Serialize, Deserialize};
 
 #[cfg_attr(feature="rustc-serialize", derive(RustcEncodable, RustcDecodable))]
+#[cfg_attr(feature="serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Copy, Clone)]
 pub struct LLA {
     pub lat_deg: f64,
@@ -62,6 +65,7 @@ impl<'a> From<&'a LLA> for LLA {
 
 
 #[cfg_attr(feature="rustc-serialize", derive(RustcEncodable, RustcDecodable))]
+#[cfg_attr(feature="serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Copy, Clone)]
 pub struct ECEF {
     pub x: f64,

@@ -34,6 +34,9 @@ extern crate lazy_static;
 #[cfg(feature = "rustc-serialize")]
 extern crate rustc_serialize;
 
+#[cfg(feature = "serde")]
+extern crate serde;
+
 mod structs;
 mod conversions;
 
